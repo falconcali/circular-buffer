@@ -61,7 +61,7 @@ void cb_clear(pt_cb* pcb)
 	pcb->write = pcb->read = pcb->buf;
 }
 
-unsigned int cb_write(pt_cb* pcb, const char* data, unsigned int size)
+unsigned int cb_write(pt_cb* pcb, const char* src_buffer, unsigned int size)
 {
 	unsigned int bytes_can_write = pcb->capacity - pcb->size;
 	if (size > bytes_can_write) 
@@ -69,14 +69,14 @@ unsigned int cb_write(pt_cb* pcb, const char* data, unsigned int size)
 	unsigned int byte_to_end = pcb->capacity - (pcb->write - pcb->buf);
 	if (byte_to_end > size)
 	{
-		memcpy(pcb->write, data, size);
+		memcpy(pcb->write, src_buffer, size);
 		pcb->write += size;
 	}
 	else
 	{
-		memcpy(pcb->write, data, byte_to_end);
+		memcpy(pcb->write, src_buffer, byte_to_end);
 		unsigned int byte_left = size - byte_to_end;
-		memcpy(pcb->buf, data + byte_to_end, byte_left);
+		memcpy(pcb->buf, src_buffer + byte_to_end, byte_left);
 		pcb->write = pcb->buf + byte_left;
 	}
 
@@ -84,21 +84,21 @@ unsigned int cb_write(pt_cb* pcb, const char* data, unsigned int size)
 	return size;
 }
 
-unsigned int cb_read(pt_cb* pcb, char* data, unsigned int size)
+unsigned int cb_read(pt_cb* pcb, char* dst_buffer, unsigned int size)
 {
 	if (size > pcb->size) 
 		size = pcb->size;
 	unsigned int byte_to_end = pcb->capacity - (pcb->read - pcb->buf);
 	if (byte_to_end > size)
 	{
-		memcpy(data, pcb->read, size);
+		memcpy(dst_buffer, pcb->read, size);
 		pcb->read += size;
 	}
 	else
 	{
-		memcpy(data, pcb->read, byte_to_end);
+		memcpy(dst_buffer, pcb->read, byte_to_end);
 		unsigned int byte_left = size - byte_to_end;
-		memcpy(data + byte_to_end, pcb->buf, byte_left);
+		memcpy(dst_buffer + byte_to_end, pcb->buf, byte_left);
 		pcb->read = pcb->buf + byte_left;
 	}
 
@@ -106,19 +106,19 @@ unsigned int cb_read(pt_cb* pcb, char* data, unsigned int size)
 	return size;
 }
 
-unsigned int cb_peek(pt_cb* pcb, char* data, unsigned int size)
+unsigned int cb_peek(pt_cb* pcb, char* dst_buffer, unsigned int size)
 {
 	if (size > pcb->size) 
 		size = pcb->size;
 	unsigned int byte_to_end = pcb->capacity - (pcb->read - pcb->buf);
 	if (byte_to_end > size)
 	{
-		memcpy(data, pcb->read, size);
+		memcpy(dst_buffer, pcb->read, size);
 	}
 	else
 	{
-		memcpy(data, pcb->read, byte_to_end);
-		memcpy(data + byte_to_end, pcb->buf, size - byte_to_end);
+		memcpy(dst_buffer, pcb->read, byte_to_end);
+		memcpy(dst_buffer + byte_to_end, pcb->buf, size - byte_to_end);
 	}
 
 	return size;
