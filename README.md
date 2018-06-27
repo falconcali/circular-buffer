@@ -17,4 +17,4 @@ How to use :
 		cb_read(pcb, read_buf, 13);
 		printf("%s\n", read_buf); // output should be "hello world"
 
-Check the pt_cb.h to see more APIs.
+Check the file "pt_cb.h" to see more APIs.
