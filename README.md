@@ -2,6 +2,7 @@
 A simple, easy to use and high performance circular buffer (ring buffer) designed for different systems.
 
 How to use : 
+	
 	pt_cb* pcb = cb_create(128);
 	cb_write(pcb, "hello world", 13);
 	
